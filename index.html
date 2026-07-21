@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>IC-Chat</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+  <!-- Burbuja flotante inicial: llamativa, invita a abrir el chat sin forzar nada -->
+  <div id="ic-chat-bubble" aria-label="Abrir IC-Chat / Open IC-Chat">
+    <div class="bubble-pulse-ring"></div>
+    <img src="assets/IC-CHAT_LOGO_3.png" alt="IC-Chat">
+    <span class="bubble-badge">💬</span>
+  </div>
+
+  <div id="ic-chat-widget" class="hidden">
+
+    <!-- Encabezado del chat -->
+    <header id="chat-header">
+      <img src="assets/IC-CHAT_LOGO_3.png" alt="IC-Chat" id="chat-header-logo">
+      <div id="chat-header-text">
+        <span id="chat-header-title">IC-Chat</span>
+        <span id="chat-header-subtitle">Jaime Ventura Energy Consultant</span>
+      </div>
+      <img src="assets/jvec_logo.png" alt="Jaime Ventura Energy Consultant" id="chat-header-logo-secondary">
+    </header>
+
+    <!-- Barra delgada de utilidades: siempre visible, con texto bilingüe para evitar ambigüedad de íconos -->
+    <div id="chat-utility-bar">
+      <button type="button" id="chat-minimize-btn">− Minimizar / Minimize</button>
+      <button type="button" id="chat-back-btn">↺ Corregir / Back</button>
+      <button type="button" id="chat-close-btn">✕ Salir / Exit</button>
+    </div>
+
+    <!-- Hilo de conversación (aquí se van agregando las burbujas) -->
+    <div id="chat-thread" aria-live="polite"></div>
+
+    <!-- Zona fija inferior: SOLO botones/opciones predefinidas. Nunca un input de texto libre. -->
+    <div id="chat-options-bar"></div>
+
+    <footer id="chat-footer">
+      <span id="chat-footer-text">© 2026 Jaime Ventura Energy Consultant, LLC</span>
+    </footer>
+  </div>
+
+  <!-- Plantilla oculta reutilizable para una burbuja del bot -->
+  <template id="tpl-bot-bubble">
+    <div class="bubble bot-bubble">
+      <div class="bubble-content"></div>
+    </div>
+  </template>
+
+  <!-- Plantilla oculta reutilizable para una burbuja del visitante (su respuesta ya elegida) -->
+  <template id="tpl-user-bubble">
+    <div class="bubble user-bubble">
+      <div class="bubble-content"></div>
+    </div>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
