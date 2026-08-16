@@ -29,6 +29,12 @@ html, body {
   background: transparent;
   font-family: Arial, Helvetica, sans-serif;
   color: var(--ic-text);
+  pointer-events: none; /* el área transparente del iframe no debe "atrapar" toques del resto del sitio Wix */
+}
+
+#ic-chat-bubble,
+#ic-chat-widget {
+  pointer-events: auto; /* solo la burbuja y el panel del chat reciben clics/toques */
 }
 
 #ic-chat-widget {
@@ -256,14 +262,14 @@ html, body {
 
 .chat-option-btn {
   flex: 1 1 auto;
-  min-width: 80px;
-  padding: 7px 10px;
-  font-size: 0.78em;
+  min-width: 66px;
+  padding: 6px 8px;
+  font-size: 0.72em;
   font-weight: bold;
   color: #fff;
   background: var(--ic-green);
   border: 2px solid var(--ic-green);
-  border-radius: 16px;
+  border-radius: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -351,7 +357,7 @@ html, body {
   flex: 0 1 auto;
   min-width: unset;
 }
-.chat-toggle-icon { width: 20px; height: 20px; object-fit: contain; }
+.chat-toggle-icon { width: 15px; height: 15px; object-fit: contain; }
 .chat-toggle-btn.toggled-on {
   background: var(--ic-blue);
   border-color: var(--ic-blue);

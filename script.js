@@ -115,6 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
       block3SummaryNote: "In Block 6, this information will be sent automatically to your IC Ambassador via EmailJS.",
 
       businessNameQuestion: "What is your business name? If you are self-employed, your personal name is fine.",
+      supplierTypeQuestion: "To guide you more precisely, which of the following best describes your business?",
+      supplierTypeAsianMfr: "🏭 Asian Manufacturer",
+      supplierTypeLocalMfr: "🏗️ Local/Regional Manufacturer",
+      supplierTypeLocalDist: "📦 Local Distributor/Wholesaler",
+      supplierTypeLocalInstaller: "🔧 Installer with Local Stock",
+      supplierTypeOther: "❓ Other",
+      otherExplainQuestion: "Could you briefly tell us more about that?",
+      otherExplainInputLabel: "Details:",
+      otherExplainEmptyError: "Please share a brief detail so we can understand better.",
       businessNameInputLabel: "Business name:",
       businessNameEmptyError: "Please share your business or personal name to continue.",
       websiteQuestion: "Do you have a website you would like to share? (optional)",
@@ -245,6 +254,15 @@ document.addEventListener('DOMContentLoaded', () => {
       block3SummaryNote: "En el Bloque 6, esta información se enviará automáticamente a su IC Ambassador vía EmailJS.",
 
       businessNameQuestion: "¿Cuál es el nombre de su negocio? Si trabaja de forma independiente, puede indicar su nombre personal.",
+      supplierTypeQuestion: "Para orientar mejor su acompañamiento, ¿cuál de las siguientes opciones describe mejor su negocio?",
+      supplierTypeAsianMfr: "🏭 Fabricante Asiático",
+      supplierTypeLocalMfr: "🏗️ Fabricante Local/Regional",
+      supplierTypeLocalDist: "📦 Distribuidor/Mayorista Local",
+      supplierTypeLocalInstaller: "🔧 Instalador con Stock Local",
+      supplierTypeOther: "❓ Otro",
+      otherExplainQuestion: "¿Podría contarnos brevemente un poco más al respecto?",
+      otherExplainInputLabel: "Detalle:",
+      otherExplainEmptyError: "Por favor, comparta un breve detalle para poder entenderlo mejor.",
       businessNameInputLabel: "Nombre del negocio:",
       businessNameEmptyError: "Por favor, indíquenos el nombre de su negocio o su nombre personal para continuar.",
       websiteQuestion: "¿Cuenta con un sitio web que desee compartir? (opcional)",
@@ -703,8 +721,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userType === 'solutionUser') {
       showRoleStep();
     } else {
-      showBusinessNameStep();
+      showSupplierTypeStep();
     }
+  }
+
+  // Campo reutilizable de "explicar otro" — se usa tanto para el tipo de Proveedor como
+  // para "¿Cómo se enteró?" cuando el visitante elige "Otro".
+  function collectOtherExplanation(onDone) {
+    botSay(t('otherExplainQuestion')).then(() => {
+      showTextInput({
+        label: t('otherExplainInputLabel'),
+        confirmLabel: t('continueButton') || 'OK',
+        emptyError: t('otherExplainEmptyError'),
+        onConfirm: onDone
+      });
+    });
+  }
+
+  function showSupplierTypeStep() {
+    botSay(t('supplierTypeQuestion')).then(() => {
+      showOptions([
+        { label: t('supplierTypeAsianMfr'), style: 'secondary', onSelect: () => { appState.collectedData.supplierSubType = t('supplierTypeAsianMfr'); showBusinessNameStep(); } },
+        { label: t('supplierTypeLocalMfr'), style: 'secondary', onSelect: () => { appState.collectedData.supplierSubType = t('supplierTypeLocalMfr'); showBusinessNameStep(); } },
+        { label: t('supplierTypeLocalDist'), style: 'secondary', onSelect: () => { appState.collectedData.supplierSubType = t('supplierTypeLocalDist'); showBusinessNameStep(); } },
+        { label: t('supplierTypeLocalInstaller'), style: 'secondary', onSelect: () => { appState.collectedData.supplierSubType = t('supplierTypeLocalInstaller'); showBusinessNameStep(); } },
+        {
+          label: t('supplierTypeOther'), style: 'secondary',
+          onSelect: () => collectOtherExplanation((detail) => {
+            appState.collectedData.supplierSubType = t('supplierTypeOther') + ' — ' + detail;
+            showBusinessNameStep();
+          })
+        }
+      ]);
+    });
   }
 
   // ==========================================================================
@@ -818,7 +867,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: t('refWeb'), style: 'secondary', onSelect: () => { appState.collectedData.referralSource = 'web'; onDone(); } },
         { label: t('refReferredUser'), style: 'secondary', onSelect: () => { appState.collectedData.referralSource = 'referral'; showReferrerNameStep(onDone); } },
         { label: t('refSocial'), style: 'secondary', onSelect: () => { appState.collectedData.referralSource = 'social'; onDone(); } },
-        { label: t('refOther'), style: 'secondary', onSelect: () => { appState.collectedData.referralSource = 'other'; onDone(); } }
+        {
+          label: t('refOther'), style: 'secondary',
+          onSelect: () => collectOtherExplanation((detail) => {
+            appState.collectedData.referralSource = t('refOther') + ' — ' + detail;
+            onDone();
+          })
+        }
       ]);
     });
   }
@@ -1013,7 +1068,8 @@ document.addEventListener('DOMContentLoaded', () => {
     return {
       source: 'IC-Chat' + (isIncomplete ? ' — INCOMPLETE / left mid-conversation' : ''),
       registration_type: isSupplier ? 'Solutions Provider' : 'Solutions User',
-      role: isSupplier ? 'Supplier (S)' : labelFor(roleLabelKeys, d.role),
+      user_sub_type: isSupplier ? 'N/A' : labelFor(roleLabelKeys, d.role),
+      supplier_sub_type: isSupplier ? (d.supplierSubType || 'N/A') : 'N/A',
       customer_name: d.name || 'N/A',
       customer_phone: fullPhone || 'N/A',
       customer_email: d.email || 'N/A',
