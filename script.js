@@ -1377,7 +1377,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bubbleEl.addEventListener('click', expandChat);
   document.getElementById('chat-minimize-btn').addEventListener('click', minimizeChat);
 
-  autoExpandTimer = setTimeout(expandChat, 10000);
+  autoExpandTimer = setTimeout(expandChat, 2000);
 
   // ---------- Arranque ----------
   startChat();
